@@ -1,6 +1,6 @@
 ﻿namespace SapperTest.Services
 {
-    public class GameChecker
+    public class GameSetting
     {
         private static readonly int _maxFieldSize = 30;
         private static readonly int _minFieldSize = 5;

@@ -12,9 +12,9 @@ namespace SapperTest.Controllers
         private static Game _game;
 
         [HttpPost("new")]
-        public ActionResult<GameResponseModel> New(GameRequestModel newGame)
+        public ActionResult<GameResponseModel> NewGame(GameRequestModel newGame)
         {
-            var message = GameChecker.CheckUserSettings(newGame.Width, newGame.Height, newGame.MinesCount);
+            var message = GameSetting.CheckUserSettings(newGame.Width, newGame.Height, newGame.MinesCount);
 
             if (message != string.Empty)
             {
@@ -37,7 +37,7 @@ namespace SapperTest.Controllers
         }
 
         [HttpPost("turn")]
-        public ActionResult<TurnResponseModel> Index(TurnRequestModel userChoice)
+        public ActionResult<TurnResponseModel> Turn(TurnRequestModel userChoice)
         {
             _game.OpenCells(userChoice.Row, userChoice.Col);
 
