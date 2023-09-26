@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SapperTest.Mdels
+namespace SapperTest.Models
 {
     public class GameResponseModel
     {

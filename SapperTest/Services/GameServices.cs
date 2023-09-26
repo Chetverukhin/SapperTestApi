@@ -1,67 +1,91 @@
 ﻿using SapperTest.Data;
+using SapperTest.Models;
 
 namespace SapperTest.Services
 {
     public static class GameServices
     {
-        public static void GetDefaultField(Game game)
+        public static void End(this Game game) 
         {
-            for (int i = 0; i < game.Heigth; i++)
+            if (game.ClearedMines())
             {
-                for (int j = 0; j < game.Width; j++)
-                {
-                    game.Field[i, j] = " ";
-                }
+                game.Win = true;
             }
-        }
-        public static void SetMines(int minesCount, int width, int height)
-        {
-            var field = new string[width, height];
-            var counter = 0;
-            while (counter < minesCount)
-            {
-                var col = new Random().Next(0, width);
-                var row = new Random().Next(0, height);
 
-                if (field[col, row] != "X")
+            game.Completed = true;
+            game.SetEndGameField();
+        }
+
+
+        public static List<string[]> CreateResponseField(string[,] field)
+        {
+            var responseList = new List<string[]>();
+
+            for (int i = 0; i < field.GetLength(0); i++)
+            {
+                string[] row = new string[field.GetLength(1)];
+                for (int j = 0; j < field.GetLength(1); j++)
                 {
-                    field[col, row] = "X";
-                    counter++;
+                    row[j] = field[i, j];
+                }
+
+                responseList.Add(row);
+            }
+
+            return responseList;
+        }
+
+        public static void SetEndGameField(this Game game) 
+        {
+            for (int i = 0; i < game.Row; i++)
+            {
+                for (int j = 0; j < game.Col; j++)
+                {
+                    game.OpenCell(i, j);
                 }
             }
         }
-        public static void CountCellMines(int minesCount, int width, int height)
+
+        private static void OpenCell(this Game game, int rowCoord, int colCoord)
         {
-            var field = new string[width, height];
-            for (int i = 0; i < width; i++)
+            var mineCover = game.Win ? CellCovers.ClearedMine : CellCovers.Mine;
+
+            game.Field[rowCoord, colCoord] = game.MinesMap[rowCoord, colCoord] == CellCovers.Mine
+                        ? mineCover
+                        : game.NumberMap[rowCoord, colCoord].ToString();
+        }
+
+        public static void OpenCells(this Game game, int rowCoord, int colCoord)
+        {
+            game.OpenCell(rowCoord, colCoord);
+
+            if (game.NumberMap[rowCoord, colCoord] > 0)
             {
-                for (int j = 0; j < height; j++)
+                return;
+            }
+
+            for (int k = rowCoord - 1; k < rowCoord + 2; k++)
+            {
+                for (int l = colCoord - 1; l < colCoord + 2; l++)
                 {
-                    if (field[i, j] == "X")
+                    if (!game.IsInBorder(k, l))
                     {
-                        for (int k = i - 1; k < i + 2; k++)
-                        {
-                            for (int l = j - 1; l < j + 2; l++)
-                            {
-                                if (!IsInBorder(width, height, k,l) || field[k,l] == "X")
-                                {
-                                    continue;
-                                }
-
-                                field[k,l] = field[k,l] + 1;
-                            }
-                        }
+                        continue;
+                    }
+                    if (game.Field[k, l] != CellCovers.Default)
+                    {
+                        continue;
+                    }
+                    if (game.NumberMap[k, l] == 0)
+                    {
+                        game.OpenCells(k, l);
+                    }
+                    if (game.NumberMap[k, l] > 0 && game.MinesMap[k, l] != CellCovers.Mine)
+                    {
+                        game.OpenCell(k, l);
                     }
                 }
             }
-        }
-        private static bool IsInBorder(int width, int height, int i, int j)
-        {
-            if (i < 0 || j < 0 || j > width - 1 || i > height - 1)
-            {
-                return false;
-            }
-            return true;
-        }
+        }        
     }
 }
