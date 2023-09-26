@@ -13,4 +13,4 @@
 
 ### Для моего проекта URL = "https://localhost:7226/Game"
 
-https://github.com/Chetverukhin/SapperTestApi/assets/86572188/c3b6e3de-e9b3-401c-9df4-d4ca803a72fe
+https://github.com/Chetverukhin/SapperTestApi/assets/86572188/3a347d70-8848-4c53-b4fe-f32ebb4b262d
