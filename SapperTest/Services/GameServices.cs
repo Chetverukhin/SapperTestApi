@@ -86,6 +86,11 @@ namespace SapperTest.Services
                     }
                 }
             }
-        }        
+        }
+
+        public static bool IsOpenCell(this Game game, int rowCoord, int colCoord)
+        {
+            return game.Field[rowCoord, colCoord] != CellCovers.Default;
+        }
     }
 }

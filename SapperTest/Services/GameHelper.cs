@@ -1,6 +1,8 @@
-﻿namespace SapperTest.Services
+﻿using SapperTest.Data;
+
+namespace SapperTest.Services
 {
-    public class GameSetting
+    public static class GameHelper
     {
         private static readonly int _maxFieldSize = 30;
         private static readonly int _minFieldSize = 5;
@@ -40,5 +42,21 @@
             return message;
         }
 
+        public static string CheckUserTurn(this Game game, int col, int row)
+        {
+            var message = string.Empty;
+
+            if (game.IsOpenCell(row, col))
+            {
+                message = "Ячейка уже открыта";
+            }
+
+            if (game.Completed)
+            {
+                message = "Игра завершена";
+            }            
+
+            return message;
+        }
     }
 }

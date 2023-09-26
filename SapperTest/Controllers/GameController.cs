@@ -14,11 +14,11 @@ namespace SapperTest.Controllers
         [HttpPost("new")]
         public ActionResult<GameResponseModel> NewGame(GameRequestModel newGame)
         {
-            var message = GameSetting.CheckUserSettings(newGame.Width, newGame.Height, newGame.MinesCount);
+            var message = GameHelper.CheckUserSettings(newGame.Width, newGame.Height, newGame.MinesCount);
 
             if (message != string.Empty)
             {
-                return BadRequest(new { Error = message});
+                return BadRequest(new { Error = message });
             }
 
             _game = new Game(newGame.Height, newGame.Width, newGame.MinesCount);
@@ -39,6 +39,13 @@ namespace SapperTest.Controllers
         [HttpPost("turn")]
         public ActionResult<TurnResponseModel> Turn(TurnRequestModel userChoice)
         {
+            var message = _game.CheckUserTurn(userChoice.Col, userChoice.Row);
+
+            if (message != string.Empty)
+            {
+                return BadRequest(new { Error = message });
+            }
+
             _game.OpenCells(userChoice.Row, userChoice.Col);
 
             var win = _game.ClearedMines();
